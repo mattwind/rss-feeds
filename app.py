@@ -61,7 +61,11 @@ def scrape_gnews():
     feed_items = []
     for article in articles:
         title_tag = article.find('a')
-        title = title_tag.text.strip() if title_tag else "No Title"
+        
+        if not title_tag or not title_tag.text.strip():  # Skip if no title
+            continue
+
+        title = title_tag.text.strip()
 
         # Extract the relative link and prepend the base URL
         link = title_tag['href'] if title_tag and title_tag.has_attr('href') else "No Link"
@@ -70,7 +74,7 @@ def scrape_gnews():
             link = "https://ground.news" + link  # Prepend the base URL to the relative link
 
         # replace title cause it's all messed up
-        title = link.replace("-", " ")
+        title = title.replace("-", " ")
         title = title.strip().capitalize()
         
         description = article.find('span').text.strip() if article.find('span') else "No Description"
