@@ -85,7 +85,7 @@ def scrape_gnews():
         
         feed_items.append({'title': title, 'link': link, 'description': description, 'image': image_url})
 
-    return generate_rss("Ground News", IMDB_URL, "Ground news articles.", feed_items)
+    return generate_rss("Ground News", GNEWS_URL, "Ground news articles.", feed_items)
 
 # MLive RSS Filter
 MLIVE_RSS_URL = "https://www.mlive.com/arc/outboundfeeds/rss/?outputType=xml"
