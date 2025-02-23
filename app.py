@@ -62,10 +62,20 @@ def scrape_gnews():
         title = title_tag.text.strip() if title_tag else "No Title"
         link = title_tag['href'] if title_tag and title_tag.has_attr('href') else "#"
         description = article.find('span').text.strip() if article.find('span') else "No Description"
+        
+        # Handle image with srcset
         image_tag = article.find('img')
-        image_url = image_tag['src'] if image_tag and image_tag.has_attr('src') else ""
+        image_url = ""
+        if image_tag:
+            if image_tag.has_attr('srcset'):
+                # Choose the best image URL from srcset
+                srcset = image_tag['srcset']
+                image_url = srcset.split(',')[0].split(' ')[0]  # Get the first URL in srcset
+            elif image_tag.has_attr('src'):
+                image_url = image_tag['src']  # Fallback to src if srcset is not present
+        
         feed_items.append({'title': title, 'link': link, 'description': description, 'image': image_url})
-    
+
     return generate_rss("Ground News", IMDB_URL, "Ground news articles.", feed_items)
 
 # MLive RSS Filter
