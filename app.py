@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger()
 
 # Global variables to store the latest RSS feeds
-duration = 12 #refresh feed in hours
+duration = 2 #refresh feed in hours
 latest_imdb_rss = ""
 latest_gnews_rss = ""
 latest_mlive_rss = ""
