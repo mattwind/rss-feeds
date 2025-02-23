@@ -8,6 +8,7 @@ from flask import Flask, Response
 import requests
 from bs4 import BeautifulSoup
 import logging
+import urllib.parse
 
 app = Flask(__name__)
 
@@ -63,16 +64,24 @@ def scrape_gnews():
         link = title_tag['href'] if title_tag and title_tag.has_attr('href') else "#"
         description = article.find('span').text.strip() if article.find('span') else "No Description"
         
-        # Handle image with srcset
+        # Handle image with srcset and URL decoding
         image_tag = article.find('img')
         image_url = ""
+        
         if image_tag:
             if image_tag.has_attr('srcset'):
-                # Choose the best image URL from srcset
+                # Extract the URL from srcset
                 srcset = image_tag['srcset']
-                image_url = srcset.split(',')[0].split(' ')[0]  # Get the first URL in srcset
+                # Find the part after "?url=" and before "&" (URL encoding)
+                url_part = srcset.split('?url=')[1].split('&')[0]
+                # URL decode it
+                image_url = urllib.parse.unquote(url_part)
+                # Remove any query parameters after the image file (e.g., ?&width=320...)
+                image_url = image_url.split('?')[0]
             elif image_tag.has_attr('src'):
                 image_url = image_tag['src']  # Fallback to src if srcset is not present
+                # Remove any query parameters after the image file (e.g., ?&width=320...)
+                image_url = image_url.split('?')[0]
         
         feed_items.append({'title': title, 'link': link, 'description': description, 'image': image_url})
 
