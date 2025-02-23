@@ -17,6 +17,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger()
 
 # Global variables to store the latest RSS feeds
+duration = 12 #refresh feed in hours
 latest_imdb_rss = ""
 latest_gnews_rss = ""
 latest_mlive_rss = ""
@@ -141,7 +142,7 @@ def generate_rss(title, link, description, items):
 def imdb_feed():
     return Response(latest_imdb_rss, mimetype='application/rss+xml')
 
-@app.route("/gnews")
+@app.route("/groundnews")
 def gnews_feed():
     return Response(latest_gnews_rss, mimetype='application/rss+xml')
 
@@ -158,7 +159,7 @@ def update_feeds():
     latest_mlive_rss = filter_mlive()
     logger.info("Feeds updated.")
 
-scheduler.add_job(update_feeds, 'interval', hours=24)
+scheduler.add_job(update_feeds, 'interval', hours=duration)
 scheduler.start()
 
 # Initial feed update
