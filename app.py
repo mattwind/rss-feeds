@@ -59,14 +59,14 @@ def filter_mlive():
     feed_items = []
     for entry in feed.entries:
         title = clean_text(entry.title)
-        description = clean_text(entry.description)
         link = entry.link if "link" in entry else ""
-        if any(keyword.lower() in title.lower() or keyword.lower() in description.lower() for keyword in FILTER_KEYWORDS):
+        if any(keyword.lower() in title.lower() or keyword.lower() in link.lower() for keyword in FILTER_KEYWORDS):
             continue
+        description = clean_text(entry.description)
         image_url = entry.media_content[0]["url"] if "media_content" in entry and entry.media_content else ""
         feed_items.append({'title': title, 'link': link, 'description': description, 'image': image_url})
     
-    return generate_rss("Filtered MLive", MLIVE_RSS_URL, "Filtered news feed.", feed_items)
+    return generate_rss("mlive.com", MLIVE_RSS_URL, "Michigan live news feed.", feed_items)
 
 # Generate RSS Feed XML
 def generate_rss(title, link, description, items):
