@@ -61,7 +61,12 @@ def scrape_gnews():
     for article in articles:
         title_tag = article.find('a')
         title = title_tag.text.strip() if title_tag else "No Title"
-        link = title_tag['href'] if title_tag and title_tag.has_attr('href') else "#"
+        
+        # Extract the relative link and prepend the base URL
+        link = title_tag['href'] if title_tag and title_tag.has_attr('href') else "No Link"
+        if link != "No Link" and not link.startswith("http"):
+            link = "https://ground.news" + link  # Prepend the base URL to the relative link
+        
         description = article.find('span').text.strip() if article.find('span') else "No Description"
         
         # Handle image with srcset and URL decoding
