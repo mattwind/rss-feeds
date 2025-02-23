@@ -17,6 +17,7 @@ logger = logging.getLogger()
 
 # Global variables to store the latest RSS feeds
 latest_imdb_rss = ""
+latest_gnews_rss = ""
 latest_mlive_rss = ""
 
 # IMDb Scraper
@@ -42,6 +43,30 @@ def scrape_imdb():
         feed_items.append({'title': title, 'link': link, 'description': description, 'image': image_url})
     
     return generate_rss("IMDB Movies", IMDB_URL, "Upcoming releases.", feed_items)
+
+# Ground News Scraper
+GNEWS_URL = "https://ground.news/"
+def scrape_gnews():
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(GNEWS_URL, headers=headers)
+    if response.status_code != 200:
+        logger.error(f"Failed to fetch Ground news page: {response.status_code}")
+        return ""
+    
+    soup = BeautifulSoup(response.text, 'html.parser')
+    articles = soup.find_all("div", class_="group")
+    
+    feed_items = []
+    for article in articles:
+        title_tag = article.find('a')
+        title = title_tag.text.strip() if title_tag else "No Title"
+        link = title_tag['href'] if title_tag and title_tag.has_attr('href') else "#"
+        description = article.find('span').text.strip() if article.find('span') else "No Description"
+        image_tag = article.find('img')
+        image_url = image_tag['src'] if image_tag and image_tag.has_attr('src') else ""
+        feed_items.append({'title': title, 'link': link, 'description': description, 'image': image_url})
+    
+    return generate_rss("Ground News", IMDB_URL, "Ground news articles.", feed_items)
 
 # MLive RSS Filter
 MLIVE_RSS_URL = "https://www.mlive.com/arc/outboundfeeds/rss/?outputType=xml"
@@ -92,6 +117,10 @@ def generate_rss(title, link, description, items):
 def imdb_feed():
     return Response(latest_imdb_rss, mimetype='application/rss+xml')
 
+@app.route("/gnews")
+def gnews_feed():
+    return Response(latest_gnews_rss, mimetype='application/rss+xml')
+
 @app.route("/mlive")
 def mlive_feed():
     return Response(latest_mlive_rss, mimetype='application/rss+xml')
@@ -99,8 +128,9 @@ def mlive_feed():
 # Update Feeds
 scheduler = BackgroundScheduler()
 def update_feeds():
-    global latest_imdb_rss, latest_mlive_rss
+    global latest_imdb_rss, latest_gnews_rss, latest_mlive_rss
     latest_imdb_rss = scrape_imdb()
+    latest_gnews_rss = scrape_gnews()
     latest_mlive_rss = filter_mlive()
     logger.info("Feeds updated.")
 
