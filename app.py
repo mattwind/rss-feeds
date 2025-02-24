@@ -76,6 +76,7 @@ def scrape_gnews():
 
         # replace title cause it's all messed up
         title = title.replace("-", " ")
+        title = title.replace("/article/","")
         title = title.strip().capitalize()
         
         description = article.find('span').text.strip() if article.find('span') else "No Description"
