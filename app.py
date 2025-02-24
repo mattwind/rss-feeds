@@ -69,7 +69,8 @@ def scrape_gnews():
 
         # Extract the relative link and prepend the base URL
         link = title_tag['href'] if title_tag and title_tag.has_attr('href') else "No Link"
-        
+        title = title_tag['href'] if title_tag and title_tag.has_attr('href') else "No Link"
+
         if link != "No Link" and not link.startswith("http"):
             link = "https://ground.news" + link  # Prepend the base URL to the relative link
 
