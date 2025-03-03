@@ -143,6 +143,11 @@ def generate_rss(title, link, description, items):
         ET.SubElement(item_element, "title").text = item['title']
         ET.SubElement(item_element, "link").text = item['link']
         ET.SubElement(item_element, "description").text = item['description']
+        
+        # Add a unique GUID for each item
+        guid = item['link']  # You can adjust this if you want a different unique identifier
+        ET.SubElement(item_element, "guid", isPermaLink="true").text = guid
+        
         if item['image']:
             ET.SubElement(item_element, "enclosure", url=item['image'], type="image/jpeg")
     
