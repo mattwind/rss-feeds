@@ -106,7 +106,7 @@ def scrape_gnews():
 
 # MLive RSS Filter
 MLIVE_RSS_URL = "https://www.mlive.com/arc/outboundfeeds/rss/?outputType=xml"
-FILTER_KEYWORDS = {"indycar","nascar","golf","wolverines","weather","advice","nhl","nba","mlb","nfl","sports","shopping","highschoolsports","basketball","pistons","baseball","tigers","spartans","redwings","lions"}
+FILTER_KEYWORDS = {"how-to-watch","indycar","nascar","golf","wolverines","weather","advice","nhl","nba","mlb","nfl","sports","shopping","highschoolsports","basketball","pistons","baseball","tigers","spartans","redwings","lions"}
 
 def clean_text(text):
     return re.sub(r"[^a-zA-Z0-9\s]", "", text)
